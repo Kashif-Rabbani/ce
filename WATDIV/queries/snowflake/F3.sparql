@@ -6,5 +6,3 @@ SELECT * WHERE {
 	?v0 <http://schema.org/contentRating> ?v1 .
 	?v0 <http://schema.org/contentSize> ?v2 .
 }
-
-#5810069.746915761

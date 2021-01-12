@@ -6,5 +6,3 @@ SELECT * WHERE {
 	?v0 <http://db.uwaterloo.ca/~galuc/wsdbm/friendOf> ?v2 .
 	?v0 <http://db.uwaterloo.ca/~galuc/wsdbm/likes> ?v1 .
 }
-
-#1.2658277995872307E9

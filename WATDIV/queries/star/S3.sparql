@@ -4,5 +4,3 @@ SELECT * WHERE {
 	?v0 <http://db.uwaterloo.ca/~galuc/wsdbm/hasGenre> ?v3 .
 	?v0 <http://schema.org/publisher> ?v4 .
 }
-
-#338882.0361521959

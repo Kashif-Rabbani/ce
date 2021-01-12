@@ -6,4 +6,3 @@ SELECT * WHERE {
 	?v3 <http://schema.org/keywords> ?v5 .
 }
 
-#578552.1279601761

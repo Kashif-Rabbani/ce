@@ -5,4 +5,3 @@ SELECT * WHERE {
 	?v0 <http://schema.org/language> <http://db.uwaterloo.ca/~galuc/wsdbm/Language0> .
 }
 
-#157667.44921137983

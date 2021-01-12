@@ -10,5 +10,3 @@ SELECT * WHERE {
 	?v4 <http://schema.org/jobTitle> ?v5 .
 	?v4 <http://xmlns.com/foaf/homepage> ?v6 .
 }
-
-#8.437744801665613E7

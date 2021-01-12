@@ -5,5 +5,3 @@ SELECT * WHERE {
 	?v0 <http://purl.org/goodrelations/price> ?v3 .
 	?v0 <http://purl.org/goodrelations/validThrough> ?v4 .
 }
-
-#1.1109109402581988E7

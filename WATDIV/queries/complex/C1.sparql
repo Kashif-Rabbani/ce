@@ -8,5 +8,3 @@ SELECT * WHERE {
 	?v7 <http://schema.org/actor> ?v6 .
 	?v7 <http://schema.org/language> ?v8 .
 }
-
-# 7352975.901612132

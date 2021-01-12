@@ -7,5 +7,3 @@ SELECT * WHERE {
 	?v0 <http://schema.org/caption> ?v4 .
 	?v0 <http://schema.org/description> ?v5 .
 }
-
-#586644.3747404
