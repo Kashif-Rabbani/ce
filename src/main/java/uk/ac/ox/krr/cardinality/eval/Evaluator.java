@@ -182,7 +182,7 @@ public class Evaluator {
 			//System.out.println("The estimate: " + test.estimate);
 			test.approx = runApproximate(summaryReasoner, linearFiles[i]);
 			test.std_dev = standardDeviation(linearFiles[i], test.estimate.result);
-			test.computeErrors();
+			//test.computeErrors();
 			System.out.println("...done");
 		}
 
@@ -200,7 +200,7 @@ public class Evaluator {
 			test.std_dev = standardDeviation(starFiles[i], test.estimate.result);
 			System.out.print(" deviation");
 
-			test.computeErrors();
+			//test.computeErrors();
 			System.out.println("...done");
 
 		}
@@ -219,7 +219,7 @@ public class Evaluator {
 			test.std_dev = standardDeviation(snowflakeFiles[i], test.estimate.result);
 			long end = System.currentTimeMillis() - start;
 			System.out.print(" deviation in " + (end/1000.0) + " secs");
-			test.computeErrors();
+			//test.computeErrors();
 			System.out.println("...done");
 
 		}
@@ -407,21 +407,21 @@ public class Evaluator {
 
 		out.println("\nQUERY RESULTS (all times in microseconds)");
 
-		out.println("\n LINEAR QUERIES\n");
-		print(out, linear);
-		out.flush();
-
-		out.println("\n STAR QUERIES\n");
-		print(out, star);
-		out.flush();
-
-		out.println("\n SNOWFLAKE QUERIES\n");
-		print(out, flake);
-		out.flush();
-
-		out.println("\n COMPLEX QUERIES\n");
-		print(out, complex);
-		out.flush();
+//		out.println("\n LINEAR QUERIES\n");
+//		print(out, linear);
+//		out.flush();
+//
+//		out.println("\n STAR QUERIES\n");
+//		print(out, star);
+//		out.flush();
+//
+//		out.println("\n SNOWFLAKE QUERIES\n");
+//		print(out, flake);
+//		out.flush();
+//
+//		out.println("\n COMPLEX QUERIES\n");
+//		print(out, complex);
+//		out.flush();
 	}
 
 	private static void print(PrintStream out, List<TestResult> results) {
