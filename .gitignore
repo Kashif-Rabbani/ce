@@ -1,0 +1,44 @@
+.metadata
+bin/
+tmp/
+*.tmp
+*.bak
+*.swp
+*~.nib
+local.properties
+#.settings/
+.loadpath
+.recommenders
+.DS_Store
+LUBMTDB
+out/
+sqlite
+
+# Eclipse Core
+.project
+
+# sbteclipse plugin
+.target
+target/
+TDB/
+build/
+gradle/
+gradlew
+gradlew.bat
+.gradle
+.idea/
+classes
+
+Results
+WATDIVTDB
+YAGOTDB
+
+
+settings.gradle
+
+rdfShapesServer.log
+
+# ignore files in folder foo
+OUTPUT_QUERY/*
+# but keep the folder
+!OUTPUT_QUERY/.keep
