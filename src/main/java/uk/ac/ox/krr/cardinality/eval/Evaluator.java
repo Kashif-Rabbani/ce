@@ -37,29 +37,29 @@ import uk.ac.ox.krr.cardinality.util.Dictionary;
 import uk.ac.ox.krr.cardinality.util.Importer;
 
 public class Evaluator {
-
+	
 	public static final int N = 20;
 	public static final long TIMEOUT = 1000; // 5 MINUTES
-
+	
 	public final File inputFolder;
 	public final File outputFile;
 	public final String graphName;
 	public final File importSummary;
 	public final int target;
-
+	
 	public Summary inputGraph;
 	public Summary summary;
-
+	
 	public Dictionary dictionary;
 	public final Prefixes prefixes;
-
+	
 	private List<TestResult> linear;
 	private List<TestResult> star;
 	private List<TestResult> flake;
 	private List<TestResult> complex;
-
+	
 	private SummaryResult summaryResult;
-
+	
 	public Evaluator(String input, String output, String graph, String summary, int t) {
 		inputFolder = new File(input);
 		if (!inputFolder.exists())
@@ -79,7 +79,7 @@ public class Evaluator {
 		summaryResult = new SummaryResult();
 		prefixes = new Prefixes();
 	}
-
+	
 	public void run() throws Exception {
 		readGraph();
 		File[] linearFiles = linearQueries();
@@ -87,7 +87,7 @@ public class Evaluator {
 		File[] snowflakeFiles = flakeQueries();
 		File[] complexFiles = complexQueries();
 		init(linearFiles, starFiles, snowflakeFiles, complexFiles);
-		//queryGraph(linearFiles, starFiles, snowflakeFiles, complexFiles);
+		queryGraph(linearFiles, starFiles, snowflakeFiles, complexFiles);
 		if (importSummary == null)
 			constructSummary();
 		else {
@@ -98,7 +98,7 @@ public class Evaluator {
 		print(out);
 		out.close();
 	}
-
+	
 	private void readSummary() throws Exception {
 		System.out.println("reading summary from file");
 		summary = new Summary();
@@ -107,7 +107,7 @@ public class Evaluator {
 		ois.close();
 		
 	}
-
+	
 	private void constructSummary() throws IOException {
 		long start = System.currentTimeMillis();
 		summary = new ComplexTypedSummary(inputGraph, dictionary).getSummary();
@@ -130,7 +130,7 @@ public class Evaluator {
 		summary.writeExternal(oos);
 		oos.close();
 	}
-
+	
 	protected void queryGraph(File[] linearFiles, File[] starFiles, File[] snowflakeFiles, File[] complexFiles)
 			throws Exception {
 		Reasoner graphReasoner = new Reasoner(inputGraph);
@@ -142,25 +142,25 @@ public class Evaluator {
 			test.actual = runEstimate(graphReasoner, linearFiles[i], false);
 			System.out.println("...done");
 		}
-
+		
 		System.out.println("star queries");
 		for (int i = 0; i < starFiles.length; i++) {
 			TestResult test = star.get(i);
 			System.out.print(starFiles[i].getName());
 			test.actual = runEstimate(graphReasoner, starFiles[i], false);
 			System.out.println("...done");
-
+			
 		}
-
+		
 		System.out.println("snowflake queries");
 		for (int i = 0; i < snowflakeFiles.length; i++) {
 			TestResult test = flake.get(i);
 			System.out.print(snowflakeFiles[i].getName());
 			test.actual = runEstimate(graphReasoner, snowflakeFiles[i],false);
 			System.out.println("...done");
-
+			
 		}
-
+		
 		System.out.println("complex queries");
 		for (int i = 0; i < complexFiles.length; i++) {
 			TestResult test = complex.get(i);
@@ -169,7 +169,7 @@ public class Evaluator {
 			System.out.println("...done");
 		}
 	}
-
+	
 	protected void querySummary(File[] linearFiles, File[] starFiles, File[] snowflakeFiles, File[] complexFiles)
 			throws Exception {
 		Reasoner summaryReasoner = new Reasoner(summary);
@@ -179,71 +179,70 @@ public class Evaluator {
 			TestResult test = linear.get(i);
 			System.out.print(linearFiles[i].getName());
 			test.estimate = runEstimate(summaryReasoner, linearFiles[i], true);
-			//System.out.println("The estimate: " + test.estimate);
-			//test.approx = runApproximate(summaryReasoner, linearFiles[i]);
-			//test.std_dev = standardDeviation(linearFiles[i], test.estimate.result);
-			//test.computeErrors();
-			//System.out.println("...done");
+			test.approx = runApproximate(summaryReasoner, linearFiles[i]);
+			test.std_dev = standardDeviation(linearFiles[i], test.estimate.result);
+			test.computeErrors();
+			System.out.println("...done");
 		}
-
+		
 		System.out.println("star queries");
 		for (int i = 0; i < starFiles.length; i++) {
 			TestResult test = star.get(i);
 			System.out.print(starFiles[i].getName());
 			test.estimate = runEstimate(summaryReasoner, starFiles[i], true);
-//			System.out.print(" estimate");
-
-//			test.approx = runApproximate(summaryReasoner, starFiles[i]);
-//			System.out.print(" approx");
-//
-//
-//			test.std_dev = standardDeviation(starFiles[i], test.estimate.result);
-//			System.out.print(" deviation");
-//
-//			//test.computeErrors();
-//			System.out.println("...done");
-
+			System.out.print(" estimate");
+			
+			test.approx = runApproximate(summaryReasoner, starFiles[i]);
+			System.out.print(" approx");
+			
+			
+			test.std_dev = standardDeviation(starFiles[i], test.estimate.result);
+			System.out.print(" deviation");
+			
+			test.computeErrors();
+			System.out.println("...done");
+			
 		}
-
+		
 		System.out.println("snowflake queries");
 		for (int i = 0; i < snowflakeFiles.length; i++) {
 			TestResult test = flake.get(i);
 			System.out.print(snowflakeFiles[i].getName());
 			test.estimate = runEstimate(summaryReasoner, snowflakeFiles[i], true);
-//			System.out.print(" estimate");
-
-//			test.approx = runApproximate(summaryReasoner, snowflakeFiles[i]);
-//			System.out.print(" approx");
-//
-//			long start = System.currentTimeMillis();
-//			test.std_dev = standardDeviation(snowflakeFiles[i], test.estimate.result);
-//			long end = System.currentTimeMillis() - start;
-//			System.out.print(" deviation in " + (end/1000.0) + " secs");
-//			//test.computeErrors();
-//			System.out.println("...done");
-
+			System.out.print(" estimate");
+			
+			test.approx = runApproximate(summaryReasoner, snowflakeFiles[i]);
+			System.out.print(" approx");
+			
+			long start = System.currentTimeMillis();
+			test.std_dev = standardDeviation(snowflakeFiles[i], test.estimate.result);
+			long end = System.currentTimeMillis() - start;
+			System.out.print(" deviation in " + (end/1000.0) + " secs");
+			test.computeErrors();
+			System.out.println("...done");
+			
 		}
-
+		
 		System.out.println("complex queries");
 		for (int i = 0; i < complexFiles.length; i++) {
 			TestResult test = complex.get(i);
 			System.out.print(complexFiles[i].getName());
 			
 			test.estimate = runEstimate(summaryReasoner, complexFiles[i], true);
-//			System.out.print(" estimate");
-//
-//			test.approx = runApproximate(summaryReasoner, complexFiles[i]);
-//			System.out.print(" approx");
-//
-//			test.std_dev = standardDeviation(	complexFiles[i], test.estimate.result);
-//			System.out.print(" deviation");
-//
-//			//test.computeErrors();
-//			System.out.println("...done");
-
+			System.out.print(" estimate");
+			
+			test.approx = runApproximate(summaryReasoner, complexFiles[i]);
+			System.out.print(" approx");
+			
+			test.std_dev = standardDeviation(	complexFiles[i], test.estimate.result);
+			System.out.print(" deviation");
+			
+			test.computeErrors();
+			System.out.println("...done");
+			
 		}
 	}
-
+	
 	private void init(File[] linearQueries, File[] starQueries, File[] snowflakeQueries, File[] complexQueries) {
 		for (int i = 0; i < linearQueries.length; i++) {
 			linear.add(new TestResult(linearQueries[i].getName()));
@@ -251,17 +250,17 @@ public class Evaluator {
 		for (int i = 0; i < starQueries.length; i++) {
 			star.add(new TestResult(starQueries[i].getName()));
 		}
-
+		
 		for (int i = 0; i < snowflakeQueries.length; i++) {
 			flake.add(new TestResult(snowflakeQueries[i].getName()));
 		}
-
+		
 		for (int i = 0; i < complexQueries.length; i++) {
 			complex.add(new TestResult(complexQueries[i].getName()));
 		}
-
+		
 	}
-
+	
 	private QueryResult standardDeviation(final File queryFile, final double expectation) throws IOException {
 		SPARQLQuery query = new SPARQLQuery(queryFile, dictionary, prefixes);
 		SPARQLQuery doubleQuery = SPARQLQuery.standardDeviationQuery(query);
@@ -281,33 +280,28 @@ public class Evaluator {
 		}
 		return result;
 	}
-
+	
 	private QueryResult runEstimate(Reasoner reasoner, File queryFile, boolean extendedTest) throws Exception {
-		JoinOrdering jo = new JoinOrdering(queryFile, reasoner, dictionary, prefixes);
-		System.out.println("back to runEstimate method....");
 		QueryResult result = new QueryResult();
-	/*	SPARQLQuery query = new SPARQLQuery(queryFile, dictionary, prefixes);
+		SPARQLQuery query = new SPARQLQuery(queryFile, dictionary, prefixes);
 		result.result = reasoner.answer(query);
-		
 		if (extendedTest) {
 			UnificationFreeTD tdQuery = getDecomposition(queryFile);
 			result.ntime = normalTime(reasoner, query);
 			if (tdQuery != null)
 				result.dtime = decompositionTime(reasoner, tdQuery);
 		}
-		System.out.println("Query result: " + result.result);*/
 		return result;
 	}
-
+	
 	private QueryResult runApproximate(Reasoner reasoner, File queryFile) throws Exception {
-		
 		QueryResult result = new QueryResult();
 		SPARQLQuery query = new SPARQLQuery(queryFile, dictionary, prefixes);
 		result.result = reasoner.approximate(query);
 		result.ntime = approximateTime(reasoner, query);
 		return result;
 	}
-
+	
 	private UnificationFreeTD getDecomposition(File queryFile) throws Exception {
 		File td = new File(FilenameUtils.removeExtension(queryFile.getAbsolutePath()) + ".xml");
 		if (td.exists()) {
@@ -320,7 +314,7 @@ public class Evaluator {
 	private double toMicroSeconds(double nanoseconds) {
 		return nanoseconds / 1000;
 	}
-
+	
 	private double normalTime(Reasoner reasoner, SPARQLQuery query) throws Exception {
 		for (int i = 0; i < N; i++) {
 			reasoner.answer(query);
@@ -332,7 +326,7 @@ public class Evaluator {
 		double totalTime = System.nanoTime() - start;
 		return toMicroSeconds(totalTime / N);
 	}
-
+	
 	private double approximateTime(Reasoner reasoner, SPARQLQuery query) throws Exception {
 		for (int i = 0; i < N; i++) {
 			reasoner.approximate(query);
@@ -344,7 +338,7 @@ public class Evaluator {
 		double totalTime = System.nanoTime() - start;
 		return toMicroSeconds(totalTime / N);
 	}
-
+	
 	private double decompositionTime(Reasoner reasoner, UnificationFreeTD query) throws Exception {
 		for (int i = 0; i < N; i++) {
 			reasoner.answer(query);
@@ -356,31 +350,31 @@ public class Evaluator {
 		double totalTime = System.nanoTime() - start;
 		return toMicroSeconds(totalTime / N);
 	}
-
+	
 	private File[] linearQueries() {
-		File queryFolder = new File(inputFolder.getAbsolutePath() + "/queries/linear/");
+		File queryFolder = new File(inputFolder.getAbsolutePath() + "/queries/sparql/linear/");
 		File[] linearQueries = sortedQueries(queryFolder);
 		return linearQueries;
 	}
-
+	
 	private File[] starQueries() {
-		File queryFolder = new File(inputFolder.getAbsolutePath() + "/queries/star/");
+		File queryFolder = new File(inputFolder.getAbsolutePath() + "/queries/sparql/star/");
 		File[] linearQueries = sortedQueries(queryFolder);
 		return linearQueries;
 	}
-
+	
 	private File[] flakeQueries() {
-		File queryFolder = new File(inputFolder.getAbsolutePath() + "/queries/snowflake/");
+		File queryFolder = new File(inputFolder.getAbsolutePath() + "/queries/sparql/snowflake/");
 		File[] linearQueries = sortedQueries(queryFolder);
 		return linearQueries;
 	}
-
+	
 	private File[] complexQueries() {
-		File queryFolder = new File(inputFolder.getAbsolutePath() + "/queries/complex/");
+		File queryFolder = new File(inputFolder.getAbsolutePath() + "/queries/sparql/complex/");
 		File[] linearQueries = sortedQueries(queryFolder);
 		return linearQueries;
 	}
-
+	
 	protected File[] sortedQueries(File queryFolder) {
 		File[] queries = queryFolder.listFiles(new FilenameFilter() {
 			@Override
@@ -391,40 +385,40 @@ public class Evaluator {
 		Arrays.sort(queries);
 		return queries;
 	}
-
+	
 	private void readGraph() throws RDF4JException, FileNotFoundException, IOException {
 		Object[] result = Importer.readGraph(inputFolder.getAbsolutePath() + "/facts/" + graphName, "krr-onto");
 		dictionary = (Dictionary) result[0];
 		inputGraph = (Summary) result[1];
 	}
-
+	
 	private void print(PrintStream out) {
 		out.println("GRAPH STATS");
 		out.println("\t name: " + graphName);
 		out.println("\t resources: " + inputGraph.numberOfBuckets());
 		out.println("\t triples: " + inputGraph.multiplicity());
-
+		
 		summaryResult.print(out);
-
+		
 		out.println("\nQUERY RESULTS (all times in microseconds)");
-
-//		out.println("\n LINEAR QUERIES\n");
-//		print(out, linear);
-//		out.flush();
-//
-//		out.println("\n STAR QUERIES\n");
-//		print(out, star);
-//		out.flush();
-//
-//		out.println("\n SNOWFLAKE QUERIES\n");
-//		print(out, flake);
-//		out.flush();
-//
-//		out.println("\n COMPLEX QUERIES\n");
-//		print(out, complex);
-//		out.flush();
+		
+		out.println("\n LINEAR QUERIES\n");
+		print(out, linear);
+		out.flush();
+		
+		out.println("\n STAR QUERIES\n");
+		print(out, star);
+		out.flush();
+		
+		out.println("\n SNOWFLAKE QUERIES\n");
+		print(out, flake);
+		out.flush();
+		
+		out.println("\n COMPLEX QUERIES\n");
+		print(out, complex);
+		out.flush();
 	}
-
+	
 	private static void print(PrintStream out, List<TestResult> results) {
 		printHeader(out);
 		for (TestResult result : results) {
@@ -439,31 +433,31 @@ public class Evaluator {
 			out.printf("%20.1f, ", result.apx_qerror);
 			out.printf("%20.1f, ", result.std_dev.result);
 			out.printf("%20.1f, ", result.std_dev.ntime);
-
+			
 			out.println();
 		}
 	}
-
+	
 	private static void printHeader(PrintStream out) {
 		out.printf("%20s, %20s, %20s, %20s, %20s, %20s, %20s, %20s, %20s, %20s, %20s\n", "query", "act_res", "est_res", "est_ntime", "est_dtime", "est_qerror", "apx_res", "apx_t", "apx_qerror",
 				"std_dev", "std_dev_time");
 	}
-
+	
 	static class SummaryResult {
-
+		
 		long typed_time;
 		boolean refinement;
 		long minhashTime;
-
+		
 		int triples;
 		double triplesReduction;
-
+		
 		int resources;
 		double resourcesReduction;
 		
 		int typedTriples;
 		int typedResources;
-
+		
 		public void print(PrintStream out) {
 			out.println("\nSUMMARY STATS");
 			out.println("\t resources: " + resources + ". Reduction factor: " + resourcesReduction);
@@ -473,26 +467,26 @@ public class Evaluator {
 			out.println("\t typed time (ms): " + typed_time);
 			out.println("\t minhash time (ms): " + minhashTime);
 			out.println("\t total time (ms): " + (typed_time + minhashTime));
-
+			
 		}
 	}
-
+	
 	static class TestResult {
-
+		
 		String id;
 		QueryResult actual;
 		QueryResult estimate;
 		QueryResult approx;
-
+		
 		double est_qerror;
 		double apx_qerror;
-
+		
 		QueryResult std_dev;
-
+		
 		public TestResult(String qName) {
 			id = qName;
 		}
-
+		
 		void computeErrors() {
 			double act = Math.max(1, actual.result);
 			double est = Math.max(1, estimate.result);
@@ -501,19 +495,19 @@ public class Evaluator {
 			apx_qerror = Math.max(act / apx, apx / act);
 		}
 	}
-
+	
 	static class QueryResult {
 		double result;
 		double ntime;
 		double dtime;
-
+		
 		public QueryResult() {
 			ntime = -1;
 			dtime = -1;
 			result = -1;
 		}
 	}
-
+	
 	public static void main(String[] args) throws Exception {
 		Options options = constructOptions();
 		CommandLineParser parser = new GnuParser();
@@ -531,24 +525,24 @@ public class Evaluator {
 			String header = "Run experiments\n\n";
 			formatter.printHelp("Experiment", header, options, null, true);
 		}
-
+		
 	}
-
+	
 	protected static Options constructOptions() {
 		Options options = new Options();
-
+		
 		Option benchmark = new Option("b", "benchmark", true, "benchmark directory");
 		benchmark.setRequired(true);
 		options.addOption(benchmark);
-
+		
 		Option input = new Option("d", "data", true, "data file");
 		input.setRequired(true);
 		options.addOption(input);
-
+		
 		Option output = new Option("o", "output", true, "output file");
 		output.setRequired(true);
 		options.addOption(output);
-
+		
 		Option target = new Option("t", "target", true, "target summary size");
 		target.setRequired(true);
 		options.addOption(target);

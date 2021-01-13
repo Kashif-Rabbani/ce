@@ -38,7 +38,7 @@ public class JoinOrdering {
     Query query = new Query();
     
     String dir = "";
-    String queryName = "";
+    String queryName = null;
     
     public JoinOrdering(File queryFile, Reasoner reasoner, Dictionary dictionary, Prefixes prefixes) {
         dir = queryFile.getParent();
@@ -137,12 +137,13 @@ public class JoinOrdering {
             }
             i = tripleWithCostAndIndex.getLeft();
             if (i != 0) {
-                
                 processed.put(i, tripleWithCostAndIndex.getRight().getLeft());
                 System.out.println(processed.get(i).toString() + "\t -- EC: " + globalCost);
                 sumGlobalCost += globalCost;
             }
+            
         }
+        System.out.println("QERROR," + queryName + "," + globalCost);
         System.out.println(queue);
         BasicPattern bp = new BasicPattern();
         
@@ -153,7 +154,7 @@ public class JoinOrdering {
         System.out.println("******** THE QUERY ********");
         System.out.println(optimizedQuery);
         //writeToFile(optimizedQuery.toString(), dir + "/optimized_" + queryName);
-        System.out.println("QERROR," + queryName + "," + globalCost);
+        
     }
     
     public Pair<Integer, Pair<Triple, Double>> estimator(int pointer, HashMap<Integer, Triple> remaining, HashMap<Integer, Triple> processed, Double globalCost) {
