@@ -85,7 +85,7 @@ public class JoinOrdering {
         System.out.println(triplesWithCard);
         
         tripleCardHashMap = new HashMap<>();
-
+        
         HashMap<Integer, Triple> processed = new HashMap<>();
         HashMap<Integer, Triple> remaining = new HashMap<>();
         
@@ -131,23 +131,29 @@ public class JoinOrdering {
                             tripleWithCostAndIndex = local;
                     }
                 }
+                assert tripleWithCostAndIndex != null;
+                globalCost = tripleWithCostAndIndex.getRight().getRight();
+                
             }
             i = tripleWithCostAndIndex.getLeft();
             if (i != 0) {
+                
                 processed.put(i, tripleWithCostAndIndex.getRight().getLeft());
+                System.out.println(processed.get(i).toString() + "\t -- EC: " + globalCost);
                 sumGlobalCost += globalCost;
             }
         }
         System.out.println(queue);
         BasicPattern bp = new BasicPattern();
-    
+        
         for (Integer val : queue) {
             bp.add(processed.get(val));
         }
         Query optimizedQuery = OpAsQuery.asQuery(new OpBGP(bp));
         System.out.println("******** THE QUERY ********");
         System.out.println(optimizedQuery);
-        writeToFile(optimizedQuery.toString(), dir + "/optimized_" + queryName);
+        //writeToFile(optimizedQuery.toString(), dir + "/optimized_" + queryName);
+        System.out.println("QERROR," + queryName + "," + globalCost);
     }
     
     public Pair<Integer, Pair<Triple, Double>> estimator(int pointer, HashMap<Integer, Triple> remaining, HashMap<Integer, Triple> processed, Double globalCost) {
