@@ -180,10 +180,10 @@ public class Evaluator {
 			System.out.print(linearFiles[i].getName());
 			test.estimate = runEstimate(summaryReasoner, linearFiles[i], true);
 			//System.out.println("The estimate: " + test.estimate);
-			test.approx = runApproximate(summaryReasoner, linearFiles[i]);
-			test.std_dev = standardDeviation(linearFiles[i], test.estimate.result);
+			//test.approx = runApproximate(summaryReasoner, linearFiles[i]);
+			//test.std_dev = standardDeviation(linearFiles[i], test.estimate.result);
 			//test.computeErrors();
-			System.out.println("...done");
+			//System.out.println("...done");
 		}
 
 		System.out.println("star queries");
@@ -191,17 +191,17 @@ public class Evaluator {
 			TestResult test = star.get(i);
 			System.out.print(starFiles[i].getName());
 			test.estimate = runEstimate(summaryReasoner, starFiles[i], true);
-			System.out.print(" estimate");
+//			System.out.print(" estimate");
 
-			test.approx = runApproximate(summaryReasoner, starFiles[i]);
-			System.out.print(" approx");
-
-
-			test.std_dev = standardDeviation(starFiles[i], test.estimate.result);
-			System.out.print(" deviation");
-
-			//test.computeErrors();
-			System.out.println("...done");
+//			test.approx = runApproximate(summaryReasoner, starFiles[i]);
+//			System.out.print(" approx");
+//
+//
+//			test.std_dev = standardDeviation(starFiles[i], test.estimate.result);
+//			System.out.print(" deviation");
+//
+//			//test.computeErrors();
+//			System.out.println("...done");
 
 		}
 
@@ -210,17 +210,17 @@ public class Evaluator {
 			TestResult test = flake.get(i);
 			System.out.print(snowflakeFiles[i].getName());
 			test.estimate = runEstimate(summaryReasoner, snowflakeFiles[i], true);
-			System.out.print(" estimate");
+//			System.out.print(" estimate");
 
-			test.approx = runApproximate(summaryReasoner, snowflakeFiles[i]);
-			System.out.print(" approx");
-
-			long start = System.currentTimeMillis();
-			test.std_dev = standardDeviation(snowflakeFiles[i], test.estimate.result);
-			long end = System.currentTimeMillis() - start;
-			System.out.print(" deviation in " + (end/1000.0) + " secs");
-			//test.computeErrors();
-			System.out.println("...done");
+//			test.approx = runApproximate(summaryReasoner, snowflakeFiles[i]);
+//			System.out.print(" approx");
+//
+//			long start = System.currentTimeMillis();
+//			test.std_dev = standardDeviation(snowflakeFiles[i], test.estimate.result);
+//			long end = System.currentTimeMillis() - start;
+//			System.out.print(" deviation in " + (end/1000.0) + " secs");
+//			//test.computeErrors();
+//			System.out.println("...done");
 
 		}
 
@@ -230,16 +230,16 @@ public class Evaluator {
 			System.out.print(complexFiles[i].getName());
 			
 			test.estimate = runEstimate(summaryReasoner, complexFiles[i], true);
-			System.out.print(" estimate");
-
-			test.approx = runApproximate(summaryReasoner, complexFiles[i]);
-			System.out.print(" approx");
-
-			test.std_dev = standardDeviation(	complexFiles[i], test.estimate.result);
-			System.out.print(" deviation");
-
-			//test.computeErrors();
-			System.out.println("...done");
+//			System.out.print(" estimate");
+//
+//			test.approx = runApproximate(summaryReasoner, complexFiles[i]);
+//			System.out.print(" approx");
+//
+//			test.std_dev = standardDeviation(	complexFiles[i], test.estimate.result);
+//			System.out.print(" deviation");
+//
+//			//test.computeErrors();
+//			System.out.println("...done");
 
 		}
 	}
@@ -283,9 +283,10 @@ public class Evaluator {
 	}
 
 	private QueryResult runEstimate(Reasoner reasoner, File queryFile, boolean extendedTest) throws Exception {
-		new JoinOrdering(queryFile, reasoner, dictionary, prefixes);
+		JoinOrdering jo = new JoinOrdering(queryFile, reasoner, dictionary, prefixes);
+		System.out.println("back to runEstimate method....");
 		QueryResult result = new QueryResult();
-		SPARQLQuery query = new SPARQLQuery(queryFile, dictionary, prefixes);
+	/*	SPARQLQuery query = new SPARQLQuery(queryFile, dictionary, prefixes);
 		result.result = reasoner.answer(query);
 		
 		if (extendedTest) {
@@ -294,7 +295,7 @@ public class Evaluator {
 			if (tdQuery != null)
 				result.dtime = decompositionTime(reasoner, tdQuery);
 		}
-		System.out.println("Query result: " + result.result);
+		System.out.println("Query result: " + result.result);*/
 		return result;
 	}
 

@@ -77,7 +77,7 @@ public class JoinOrdering {
         });
         
         joinOrderingAlgo(dictionary, prefixes, reasoner);
-        
+        System.out.println("Join ordering completed for this query.");
     }
     
     public void joinOrderingAlgo(Dictionary dictionary, Prefixes prefixes, Reasoner reasoner) {
