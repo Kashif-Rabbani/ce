@@ -352,25 +352,25 @@ public class Evaluator {
 	}
 	
 	private File[] linearQueries() {
-		File queryFolder = new File(inputFolder.getAbsolutePath() + "/queries/sparql/linear/");
+		File queryFolder = new File(inputFolder.getAbsolutePath() + "/queries/linear/");
 		File[] linearQueries = sortedQueries(queryFolder);
 		return linearQueries;
 	}
 	
 	private File[] starQueries() {
-		File queryFolder = new File(inputFolder.getAbsolutePath() + "/queries/sparql/star/");
+		File queryFolder = new File(inputFolder.getAbsolutePath() + "/queries/star/");
 		File[] linearQueries = sortedQueries(queryFolder);
 		return linearQueries;
 	}
 	
 	private File[] flakeQueries() {
-		File queryFolder = new File(inputFolder.getAbsolutePath() + "/queries/sparql/snowflake/");
+		File queryFolder = new File(inputFolder.getAbsolutePath() + "/queries/snowflake/");
 		File[] linearQueries = sortedQueries(queryFolder);
 		return linearQueries;
 	}
 	
 	private File[] complexQueries() {
-		File queryFolder = new File(inputFolder.getAbsolutePath() + "/queries/sparql/complex/");
+		File queryFolder = new File(inputFolder.getAbsolutePath() + "/queries/complex/");
 		File[] linearQueries = sortedQueries(queryFolder);
 		return linearQueries;
 	}
