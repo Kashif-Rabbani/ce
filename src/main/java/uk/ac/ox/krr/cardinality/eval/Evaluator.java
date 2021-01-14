@@ -86,8 +86,8 @@ public class Evaluator {
         File[] starFiles = starQueries();
         File[] snowflakeFiles = flakeQueries();
         File[] complexFiles = complexQueries();
-        init(linearFiles, starFiles, snowflakeFiles, complexFiles);
-        queryGraph(linearFiles, starFiles, snowflakeFiles, complexFiles);
+        //init(linearFiles, starFiles, snowflakeFiles, complexFiles);
+        //queryGraph(linearFiles, starFiles, snowflakeFiles, complexFiles);
         if (importSummary == null) {
             long start = System.currentTimeMillis();
             constructSummary();
@@ -96,10 +96,10 @@ public class Evaluator {
         } else {
             readSummary();
         }
-        querySummary(linearFiles, starFiles, snowflakeFiles, complexFiles);
-        PrintStream out = new PrintStream(new FileOutputStream(outputFile, false));
-        print(out);
-        out.close();
+//        querySummary(linearFiles, starFiles, snowflakeFiles, complexFiles);
+//        PrintStream out = new PrintStream(new FileOutputStream(outputFile, false));
+//        print(out);
+//        out.close();
     }
     
     private void readSummary() throws Exception {
